@@ -5,7 +5,7 @@ import csv
 # Path to CSV File
 csvpath = "./Resources/budget_data.csv"
 
-# Open CSV file "Budge Data" defined above
+# Open CSV file "Budget Data" defined above
 with open(csvpath, 'r') as csvfile:
     csvReader = csv.reader(csvfile)
     csv_list = list(csvReader)
@@ -17,19 +17,22 @@ Month_Cnt = len(csv_data)
 Money_Total = 0
 Profit_Losses = 0
 
-Monthly_Differences = []  # Create List to store monthly Mmeandifferences
+# Create List to store monthly differences
+Monthly_Differences = []  
+
+# Defining variables to hold the month and values of greatest increase/decrease
 Greatest_Increase = ["",0]
 Greatest_Decrease = ["",0]
 
-# Iterate through each month's data
+# Iterate through each month's data and money
 for data in csv_data:
     try:
-        # Convert profit/loss value to integer
+        # Convert profit/loss (money) value to integer
         Money = int(data[1])
     except ValueError:
         continue  # if the cell does not contain a numerical value, skip and continue to next numerical value
 
-    # Calculate total profit/loss
+    # Calculate total profit/loss (money total)
     Money_Total = Money_Total + Money
 
     # Calculate difference from previous month (but exclude the first month) 
@@ -37,7 +40,7 @@ for data in csv_data:
         Monthly_Difference = Money - Profit_Losses
         Monthly_Differences.append(Monthly_Difference)
 
-        # Update Greatest Increase and Decrease
+        # Update Greatest Increase and Decrease values 
         if Monthly_Difference > Greatest_Increase[1]:
             Greatest_Increase = [data[0], Monthly_Difference]
         if Monthly_Difference < Greatest_Decrease[1]:
@@ -47,11 +50,8 @@ for data in csv_data:
     Profit_Losses = Money
 
 # Determine average_change... take the sum of our new element Monthly Differences and divide by the count of transactions. 
-# Since we skipped the first month, we have a zero... to avoid this, we want to set an else parameter to avoid dividing by 0
 if len(Monthly_Differences) > 0:
     Average_Change = sum(Monthly_Differences) / len(Monthly_Differences)
-else:
-    Average_Change = 0  
 
 # Generate output, limit the average change to two decimal points
 output = f"""
@@ -73,12 +73,12 @@ Greatest Decrease in Profits:
 # Print output to terminal
 print(output)
 
-# Write output to a text file
+# Write output to a .txt file
 output_file = "./Resources/PyBank_Challenge.txt"
 with open(output_file, 'w') as txtfile:
     txtfile.write(output)
 
-# write output to a csv file
+# write output to a .csv file
 output_file = "./Resources/PyBank_Output.csv"
 with open(output_file, 'w') as csvfile:
     csvfile.write(output)
