@@ -1,70 +1,84 @@
 
 import os 
 import csv
-import math
 
-# Source: Assistance received from Caite Green and Justin (the TA) 
 # Path to CSV File
-csvpath = "./budget_data.csv"
-# Opening CSV file
+csvpath = "./Resources/budget_data.csv"
+
+# Open CSV file "Budge Data" defined above
 with open(csvpath, 'r') as csvfile:
-   csvReader = csv.reader(csvfile)
-   #convert to a list and separate the header from the data
-   csv_list = list(csvReader)
-   csv_header = csv_list[0]
-   csv_data = csv_list[1:]
+    csvReader = csv.reader(csvfile)
+    csv_list = list(csvReader)
+    csv_header = csv_list[0]
+    csv_data = csv_list[1:]
 
-# Determine the count of months
-Count_of_Months = len(csv_data)
-#print(Count_of_Months)
-
-# Declare Variables
-
-Month_Cnt = Count_of_Months
-Monetary_Diff_Total = 0
-Monetary_Diff = 0
-MDT = Monetary_Diff_Total
-MD = Monetary_Diff
+# Setting our variables...
+Month_Cnt = len(csv_data)
 Money_Total = 0
 Profit_Losses = 0
-Total = MDT
-Greatest_Increase = ["", 0]
-Greatest_Decrease = ["", 0]
 
+Monthly_Differences = []  # Create List to store monthly Mmeandifferences
+Greatest_Increase = ["",0]
+Greatest_Decrease = ["",0]
+
+# Iterate through each month's data
 for data in csv_data:
-   try:
-      Money = int(data[1])
-   except ValueError:
-      continue
-   Money_Total = Money_Total + Money
+    try:
+        # Convert profit/loss value to integer
+        Money = int(data[1])
+    except ValueError:
+        continue  # if the cell does not contain a numerical value, skip and continue to next numerical value
 
-   if Profit_Losses > 0:
-      MD = Money - Profit_Losses
-      MDT = MDT + MD
+    # Calculate total profit/loss
+    Money_Total = Money_Total + Money
 
-      if MD > Greatest_Increase[1]:
-         Greatest_Increase = [data[0], MD]
-      elif MD < Greatest_Decrease[1]:
-         Greatest_Decrease = [data[0], MD]
+    # Calculate difference from previous month (but exclude the first month) 
+    if Profit_Losses != 0:
+        Monthly_Difference = Money - Profit_Losses
+        Monthly_Differences.append(Monthly_Difference)
 
-   Profit_Losses = Money
+        # Update Greatest Increase and Decrease
+        if Monthly_Difference > Greatest_Increase[1]:
+            Greatest_Increase = [data[0], Monthly_Difference]
+        if Monthly_Difference < Greatest_Decrease[1]:
+            Greatest_Decrease = [data[0], Monthly_Difference]
 
-   Average_Change = MD / (Month_Cnt - 1)
+    # Update Profit_Losses for next iteration
+    Profit_Losses = Money
 
+# Determine average_change... take the sum of our new element Monthly Differences and divide by the count of transactions. 
+# Since we skipped the first month, we have a zero... to avoid this, we want to set an else parameter to avoid dividing by 0
+if len(Monthly_Differences) > 0:
+    Average_Change = sum(Monthly_Differences) / len(Monthly_Differences)
+else:
+    Average_Change = 0  
 
-output = """
+# Generate output, limit the average change to two decimal points
+output = f"""
 Financial Analysis
 ------------------------
-Total Months: %d
-Total: %d
-Average Change: %d
-Greatest Increase: %s
-Greatest Decrease: %s
-""" % (Month_Cnt, Money_Total, MDT, str(Greatest_Increase),str(Greatest_Decrease))
-#print to the terminal
+Total Months: {Month_Cnt}
+Total: ${Money_Total}
+Average Change: ${Average_Change:.2f} 
+Greatest Increase in Profits: 
+   Month: {Greatest_Increase[0]} 
+   Amount: ${Greatest_Increase[1]} 
+Greatest Decrease in Profits: 
+   Month: {Greatest_Decrease[0]} 
+   Amount: ${Greatest_Decrease[1]} 
+
+
+"""
+
+# Print output to terminal
 print(output)
-#make a file in my main
-output_file = "./PyBank_Challenge.txt"
-#open the file as writeable and write the output into the the txtfile
-with open(output_file,'w') as txtfile:
+
+# Write output to a text file
+output_file = "./Resources/PyBank_Challenge.txt"
+with open(output_file, 'w') as txtfile:
     txtfile.write(output)
+
+# write output to a csv file
+output_file = "./Resources/PyBank_Output.csv"
+with open(output_file, 'w') as csvfile:
+    csvfile.write(output)
