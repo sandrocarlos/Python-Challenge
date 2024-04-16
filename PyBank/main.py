@@ -74,11 +74,11 @@ Greatest Decrease in Profits:
 print(output)
 
 # Write output to a .txt file
-output_file = "./Resources/PyBank_Challenge.txt"
+output_file = "./analysis/PyBank_Challenge.txt"
 with open(output_file, 'w') as txtfile:
     txtfile.write(output)
 
 # write output to a .csv file
-output_file = "./Resources/PyBank_Output.csv"
+output_file = "./analysis/PyBank_Output.csv"
 with open(output_file, 'w') as csvfile:
     csvfile.write(output)
