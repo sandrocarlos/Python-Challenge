@@ -20,54 +20,51 @@ DeGette_Votes = 0
 Doane_Votes = 0 
 
 
-# Create List to store total vote count
-# Vote_Count= []  
 
-# Defining variables to hold the month and values of greatest increase/decrease
-# Most_Votes= ["",0]
-
-
-# Iterate through each candidates votes
+# Iterate through and count each candidates votes based on the 'if' 
 for data in PyPoll_data:
 
     # Calculate total votes casted for all candidates
     Total_Votes += 1
-    # Where element 2 is Charles Casper then count his vote + 1
+    # Where element 2 is Charles Casper then count their vote + 1
     if data[2] == "Charles Casper Stockham":
         Stockham_Votes += 1
+    # Where element 2 is Diana DeGette then count their vote + 1
     elif data[2] == "Diana DeGette":
         DeGette_Votes += 1
+    # Take remaining candidate rows and count their vote + 1
     else:
         Doane_Votes += 1 
 
+# Calculate each candidates votes then divide by total votes... multiply by 100 to get percentage. Add , 3 argument to limit decimal points to 3.
 Stockham_Percentage = round((Stockham_Votes / Total_Votes *100), 3)
 Doane_Percentage = round((Doane_Votes / Total_Votes * 100), 3)
 DeGette_Percentage = round((DeGette_Votes / Total_Votes * 100), 3)
 
+# Create a list of each candidates total votes to insert into max function
 vote_list = [Stockham_Votes, DeGette_Votes, Doane_Votes]
+# Identify the highest vote count of the candidates
 winner_vote_cnt = max(vote_list)
+# Create a dictionary key value pair to cycle through to identify the winner
 candidate_list = {
    
     "Charles Casper Stockham": Stockham_Votes, 
     "Diana Degette": DeGette_Votes,
     "Raymon Anthony Doane" : Doane_Votes        
 }
+# Creating an empty string to hold the winner's name...
 winner_name = ""
-    # three main dictionary functions
-        # .items() gives both key value pairs
-        # .keys() gives key data
-        # .values() gives value data
 
-# print(candidate_list.items())
-# print(candidate_list.keys())
-# print(candidate_list.values())
-
+# Creating for loop to iterate through the dictionary's key value pair (k,v)
+# In this k,v loop, I am setting if winner_vote_count(Max value of votes) is v (Candidate's vote count in the dictionary), then look at k (Key: candidate's name in the dictionary)
+# This gives us our winner's name.   
 for k, v in candidate_list.items():
     
     if winner_vote_cnt == v:
         winner_name = k
 
-#  Generate output, limit the average change to two decimal points
+#  Generate output, limit the average change to three decimal points 
+# Each curly brace is referencing the identified variables to answer this week's challenge
 output = f"""
 Election Results
 ------------------------
